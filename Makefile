@@ -59,3 +59,14 @@ status:
 	else \
 	    echo "The extension is disabled"; \
 	fi
+
+dist:
+	@git log > ChangeLog; \
+	for f in "$(FILES)"; do \
+	    if [ "x$$f" != "xREADME" ]; then \
+	        dist_file="$$dist_file $$f"; \
+	    fi; \
+	done; \
+	rm -f message-notifier.zip 2> /dev/null; \
+	zip message-notifier.zip $$dist_file ChangeLog; \
+	rm ChangeLog
