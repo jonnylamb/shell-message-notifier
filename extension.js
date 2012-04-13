@@ -21,6 +21,7 @@ const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
 const St = imports.gi.St;
 
+let originalSetCount;
 let label;
 
 function MessageLabel() {
@@ -61,22 +62,21 @@ function customSetCount(count, visible) {
     label.updateCount();
 }
 
-let originalSetCount;
-
 function init() {
-    originalSetCount = MessageTray.Source.prototype._setCount;
-
-    label = new MessageLabel();
 }
 
 function enable() {
+    originalSetCount = MessageTray.Source.prototype._setCount;
     MessageTray.Source.prototype._setCount = customSetCount;
 
+    label = new MessageLabel();
     Main.panel._rightBox.insert_actor(label.actor, 0);
 }
 
 function disable() {
     MessageTray.Source.prototype._setCount = originalSetCount;
+    originalSetCount = null;
 
     Main.panel._rightBox.remove_actor(label.actor);
+    label = null;
 }
