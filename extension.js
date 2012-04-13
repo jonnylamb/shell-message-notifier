@@ -56,9 +56,7 @@ MessageLabel.prototype = {
 };
 
 function customSetCount(count, visible) {
-    let fallbackSetCount = Lang.bind(this, originalSetCount);
-    fallbackSetCount(count, visible);
-
+    originalSetCount.call(this, count, visible);
     label.updateCount();
 }
 
