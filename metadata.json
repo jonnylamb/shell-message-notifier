@@ -2,6 +2,6 @@
     "shell-version": ["3.2", "3.4"],
     "uuid": "message-notifier@shell-extensions.barisione.org",
     "name": "Message Notifier",
-    "description": "Shows if you have unread IM messages",
+    "description": "Shows how many conversations with new messages you have",
     "url": "http://cgit.collabora.com/git/user/bari/shell-message-notifier.git/"
 }
