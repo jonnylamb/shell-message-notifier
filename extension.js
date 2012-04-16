@@ -44,8 +44,8 @@ MessageLabel.prototype = {
 
         let items = Main.messageTray._summaryItems;
         for (let i = 0; i < items.length; i++) {
-            let s = items[i].source;
-            if (s._counterBin.visible && s._counterLabel.get_text() != '0') {
+            let messageCount = parseInt(items[i].source._counterLabel.get_text(), 10);
+            if (!isNaN(messageCount) && messageCount > 0) {
                 count++;
             }
         }
