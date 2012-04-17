@@ -19,22 +19,27 @@
 const Lang = imports.lang;
 const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
+const PanelMenu = imports.ui.panelMenu;
+const PopupMenu = imports.ui.popupMenu;
 const St = imports.gi.St;
 
-let originalSetCount;
-let label;
+let originalSetCount = null;
+let indicator = null;
 
-function MessageLabel() {
-    this._init();
+function Indicator() {
+    this._init.apply(this, arguments);
 }
 
-MessageLabel.prototype = {
-    _init: function() {
-        this.countLabel = new St.Label({style_class: 'message-label'});
+Indicator.prototype = {
+    __proto__: PanelMenu.Button.prototype,
 
-        this.actor = new St.Button({name: 'messageButton',
-                                    style_class: 'message-button'});
-        this.actor.set_child(this.countLabel);
+    _init: function() {
+        PanelMenu.Button.prototype._init.call(this, 0.0, "Message notifier");
+
+        this._countLabel = new St.Label({style_class: 'message-label'});
+
+        this.actor.visible = false;
+        this.actor.add_actor(this._countLabel);
 
         this.updateCount();
     },
@@ -50,14 +55,14 @@ MessageLabel.prototype = {
             }
         }
 
-        this.countLabel.visible = count > 0;
-        this.countLabel.set_text(count.toString());
+        this._countLabel.set_text(count.toString());
+        this.actor.visible = count > 0;
     }
-};
+}
 
 function customSetCount(count, visible) {
     originalSetCount.call(this, count, visible);
-    label.updateCount();
+    indicator.updateCount();
 }
 
 function init() {
@@ -67,14 +72,14 @@ function enable() {
     originalSetCount = MessageTray.Source.prototype._setCount;
     MessageTray.Source.prototype._setCount = customSetCount;
 
-    label = new MessageLabel();
-    Main.panel._rightBox.insert_actor(label.actor, 0);
+    indicator = new Indicator();
+    Main.panel.addToStatusArea('message-notifier', indicator, 0);
 }
 
 function disable() {
     MessageTray.Source.prototype._setCount = originalSetCount;
     originalSetCount = null;
 
-    Main.panel._rightBox.remove_actor(label.actor);
-    label = null;
+    indicator.destroy();
+    indicator = null;
 }
