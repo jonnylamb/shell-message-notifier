@@ -63,7 +63,33 @@ Indicator.prototype = {
 
         this._countLabel.set_text(count.toString());
         this.actor.visible = count > 0;
-    }
+
+        if (this.menu.isOpen)
+            this._populateMenu();
+    },
+
+    _onButtonPress: function(actor, event) {
+        if (!this.menu.isOpen)
+            this._populateMenu();
+
+        PanelMenu.Button.prototype._onButtonPress.call(this, actor, event);
+    },
+
+    _populateMenu: function() {
+        this.menu.removeAll();
+
+        this._forEachNotification(Lang.bind(this, function(item, messageCount) {
+            let title = item.source.title;
+            if (!isNaN(messageCount) && messageCount > 1)
+                title += " (" + messageCount.toString() + ")";
+
+            let menuItem = new PopupMenu.PopupMenuItem(title);
+            menuItem.connect('activate', function() {
+                item.source.open();
+            });
+            this.menu.addMenuItem(menuItem);
+        }));
+    },
 }
 
 function customSetCount(count, visible) {
