@@ -44,16 +44,22 @@ Indicator.prototype = {
         this.updateCount();
     },
 
-    updateCount: function() {
-        let count = 0;
-
+    _forEachNotification: function(callback) {
         let items = Main.messageTray._summaryItems;
         for (let i = 0; i < items.length; i++) {
-            let messageCount = parseInt(items[i].source._counterLabel.get_text(), 10);
+            let item = items[i];
+            let messageCount = parseInt(item.source._counterLabel.get_text(), 10);
             if (!isNaN(messageCount) && messageCount > 0) {
-                count++;
+                callback(item, messageCount);
             }
         }
+    },
+
+    updateCount: function() {
+        let count = 0;
+        this._forEachNotification(function(item, messageCount) {
+            count++;
+        });
 
         this._countLabel.set_text(count.toString());
         this.actor.visible = count > 0;
