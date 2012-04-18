@@ -20,10 +20,10 @@ install:
 	fi
 
 uninstall: disable-internal
-	@for f in "$(FILES)"; do \
-	    rm $(EXT_DIR)/$(UUID)/$$f; \
+	@for f in "$(FILES)" ChangeLog; do \
+	    rm $(EXT_DIR)/$(UUID)/$$f 2> /dev/null || true; \
 	done
-	@rmdir $(EXT_DIR)/$(UUID)
+	@[ -d $(EXT_DIR)/$(UUID) ] && rmdir $(EXT_DIR)/$(UUID); true
 
 enable: disable-internal
 	@if [ ! -d "$(EXT_DIR)/$(UUID)" ]; then \
