@@ -203,7 +203,7 @@ Indicator.prototype = {
                 else if (item.source.title == 'notify-send')
                     key = 'notify-send'
 
-                if (key != null || source.isChat) {
+                if (key != null) {
                     let app_cb = app_map[key];
                     if (app_cb != null) {
                         debug ("processing with handler for key '" + key +
