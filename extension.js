@@ -198,10 +198,10 @@ Indicator.prototype = {
                 let key = null;
                 if (source.isChat)
                     key = 'telepathy';
+                else if (source.title == 'notify-send')
+                    key = 'notify-send'
                 else if (source.app)
                     key = source.app.get_id();
-                else if (item.source.title == 'notify-send')
-                    key = 'notify-send'
 
                 if (key != null) {
                     let app_cb = app_map[key];
