@@ -166,10 +166,10 @@ Indicator.prototype = {
         debug("updating count");
 
         let app_map = {
-            'telepathy':            this._handleGeneric, /* Chat notifications */
-            'notify-send':          this._handleNotifySend,
-            'xchat-gnome.desktop':  this._handleXChatGnome,
-            'pidgin.desktop':       this._handlePidgin,
+            'telepathy':           this._handleGeneric, /* Chat notifications */
+            'notify-send':         this._handleNotifySend,
+            'xchat-gnome.desktop': this._handleXChatGnome,
+            'pidgin.desktop':      this._handlePidgin,
         };
 
         this._count = 0;
