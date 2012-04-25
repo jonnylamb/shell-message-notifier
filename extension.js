@@ -44,51 +44,143 @@ Indicator.prototype = {
         this.updateCount();
     },
 
-    _forEachNotification: function(callback) {
-        let items = Main.messageTray._summaryItems;
-        for (let i = 0; i < items.length; i++) {
-            let item = items[i];
-            let messageCount = parseInt(item.source._counterLabel.get_text(), 10);
-            if (!isNaN(messageCount) && messageCount > 0) {
-                callback(item, messageCount);
-            }
+    _addItem: function(title, count, openFunction) {
+        this._count += 1;
+
+        if (count > 0)
+            title += " (" + count.toString() + ")";
+
+        let menuItem = new PopupMenu.PopupMenuItem(title);
+        menuItem.connect('activate', openFunction);
+        this.menu.addMenuItem(menuItem);
+    },
+
+    _addItemWithSource: function(title, count, source) {
+        this._addItem(title, count, Lang.bind(source, source.open));
+    },
+
+    _handleGeneric: function(item, sourceCount) {
+        // Easiest case: every notification item represents a single chat.
+        this._addItemWithSource(item.source.title, sourceCount, item.source);
+    },
+
+    _handleGenericWithNotifications: function(item, sourceCount, showCount) {
+        // A single notification icon represents more conversations. We try
+        // to split them based on the title.
+        // If showCount is true it means that the application generates a
+        // notification per new message, so we can count them (like in the
+        // XChat-GNOME case).
+        // Otherwise, the application (Pidgin for instance) just generates
+        // a notification for the first message, so we cannot rely on
+        // counting the notifications.
+
+        if (!item.source.notifications)
+            return;
+
+        let countMap = {}
+        for (let i = 0; i < item.source.notifications.length; i++) {
+            let title = item.source.notifications[i].title;
+            let count = countMap[title];
+            if (count == undefined)
+                count = 0;
+            countMap[title] = count + 1;
+        }
+
+        for (let title in countMap)
+            this._addItemWithSource(title, showCount ? countMap[title] : -1, item.source);
+    },
+
+    _startHandlingNotifySend: function() {
+        this._pendingNotifySend = {}
+    },
+
+    _handleNotifySend: function(item, sourceCount) {
+        // notify-send is invoked once per new message, so we need to go
+        // through all the notifications icons, group them and then add
+        // the items.
+        // Note that notify-send is rubbish with gnome-shell as it ends
+        // up just piling up notification icons in the tray and clicking
+        // on them cannot open the corresponding application. By grouping
+        // the notifications with the same title together we try to improve
+        // things as a single click can get rid of multiple notifications.
+
+        if (!item.source.notifications)
+            return;
+
+        // I really don't think there can be multiple ones, but...
+        for (let i = 0; i < item.source.notifications.length; i++) {
+            let title = item.source.notifications[i].title;
+            let existing = this._pendingNotifySend[title];
+            if (existing == undefined)
+                existing = new Array();
+            existing.push(item.source);
+            this._pendingNotifySend[title] = existing;
         }
     },
 
+    _finishHandlingNotifySend: function() {
+        for (let title in this._pendingNotifySend) {
+            let notifications = this._pendingNotifySend[title];
+            this._addItem(title, notifications.length, function() {
+                // We call open on all of the notifications, but I don't think it
+                // can do anything in the notify-send case (except for dismissing
+                // the notification).
+                for (let i = 0; i < notifications.length; i++)
+                    notifications[i].open();
+            });
+        }
+
+        this._pendingNotifySend = undefined;
+    },
+
+    _handleXChatGnome: function(item, sourceCount) {
+        this._handleGenericWithNotifications(item, sourceCount, true);
+    },
+
+    _handlePidgin: function(item, sourceCount) {
+        this._handleGenericWithNotifications(item, sourceCount, false);
+    },
+
     updateCount: function() {
-        let count = 0;
-        this._forEachNotification(function(item, messageCount) {
-            count++;
-        });
+        let app_map = {
+            'telepathy':            this._handleGeneric, /* Chat notifications */
+            'notify-send':          this._handleNotifySend,
+            'xchat-gnome.desktop':  this._handleXChatGnome,
+            'pidgin.desktop':       this._handlePidgin,
+        };
 
-        this._countLabel.set_text(count.toString());
-        this.actor.visible = count > 0;
-
-        if (this.menu.isOpen)
-            this._populateMenu();
-    },
-
-    _onButtonPress: function(actor, event) {
-        if (!this.menu.isOpen)
-            this._populateMenu();
-
-        PanelMenu.Button.prototype._onButtonPress.call(this, actor, event);
-    },
-
-    _populateMenu: function() {
+        this._count = 0;
+        this._startHandlingNotifySend();
         this.menu.removeAll();
 
-        this._forEachNotification(Lang.bind(this, function(item, messageCount) {
-            let title = item.source.title;
-            if (!isNaN(messageCount) && messageCount > 1)
-                title += " (" + messageCount.toString() + ")";
+        let items = Main.messageTray._summaryItems;
 
-            let menuItem = new PopupMenu.PopupMenuItem(title);
-            menuItem.connect('activate', function() {
-                item.source.open();
-            });
-            this.menu.addMenuItem(menuItem);
-        }));
+        for (let i = 0; i < items.length; i++) {
+            let item = items[i];
+            let source = item.source;
+            let sourceCount = parseInt(source._counterLabel.get_text(), 10);
+
+            if (!isNaN(sourceCount) && sourceCount > 0) {
+                let key = null;
+                if (source.isChat)
+                    key = 'telepathy';
+                else if (source.app)
+                    key = source.app.get_id();
+                else if (item.source.title == 'notify-send')
+                    key = 'notify-send'
+
+                if (key != null || source.isChat) {
+                    let app_cb = app_map[key];
+                    if (app_cb != null)
+                        app_cb.call(this, item, sourceCount);
+                }
+            }
+        }
+
+        this._finishHandlingNotifySend();
+
+        this._countLabel.set_text(this._count.toString());
+        this.actor.visible = this._count > 0;
     },
 }
 
