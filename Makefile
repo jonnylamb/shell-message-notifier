@@ -9,6 +9,10 @@ STATUS=$$(gsettings get $(SCHEMA) $(KEY) | grep "$(UUID)" > /dev/null 2>&1; if [
 all:
 
 install:
+	@echo "You should install this extension from <https://extensions.gnome.org/extension/150>."
+	@echo "If you really need to install from source, for instance because you are making changes, you can use 'make force-install'."
+
+force-install:
 	@mkdir -p $(EXT_DIR)/$(UUID)
 	@for f in "$(FILES)"; do \
 	    cp -f $$f $(EXT_DIR)/$(UUID)/$$f; \
@@ -27,7 +31,7 @@ uninstall: disable-internal
 
 enable: disable-internal
 	@if [ ! -d "$(EXT_DIR)/$(UUID)" ]; then \
-	    echo "Before enabling the extension you have to install it with 'make install'"; \
+	    echo "Before enabling the extension you have to install it, see 'make install'"; \
 	    exit 1; \
 	fi
 	@curr_val=`gsettings get $(SCHEMA) $(KEY)`; \
