@@ -16,6 +16,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+const GLib = imports.gi.GLib;
 const Lang = imports.lang;
 const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
@@ -25,6 +26,13 @@ const St = imports.gi.St;
 
 let originalSetCount = null;
 let indicator = null;
+
+let debugEnabled = false;
+
+function debug(message) {
+    if (debugEnabled)
+        log ("MESSAGE-NOTIFIER: " + message);
+}
 
 function Indicator() {
     this._init.apply(this, arguments);
@@ -53,6 +61,8 @@ Indicator.prototype = {
         let menuItem = new PopupMenu.PopupMenuItem(title);
         menuItem.connect('activate', openFunction);
         this.menu.addMenuItem(menuItem);
+
+        debug("added item '" + title + "'");
     },
 
     _addItemWithSource: function(title, count, source) {
@@ -111,14 +121,25 @@ Indicator.prototype = {
         for (let i = 0; i < item.source.notifications.length; i++) {
             let title = item.source.notifications[i].title;
             let existing = this._pendingNotifySend[title];
-            if (existing == undefined)
+            if (existing == undefined) {
                 existing = new Array();
+                debug("delaying addition of item '" + title + "'");
+            }
+            else {
+                debug("updating the sources for delayed item '" + title + "'");
+            }
             existing.push(item.source);
             this._pendingNotifySend[title] = existing;
         }
     },
 
     _finishHandlingNotifySend: function() {
+        if (debugEnabled) {
+            let pendingCount = Object.keys(this._pendingNotifySend).length;
+            if (pendingCount > 0)
+                debug("adding " + pendingCount + " pending notify-send items");
+        }
+
         for (let title in this._pendingNotifySend) {
             let notifications = this._pendingNotifySend[title];
             this._addItem(title, notifications.length, function() {
@@ -142,6 +163,8 @@ Indicator.prototype = {
     },
 
     updateCount: function() {
+        debug("updating count");
+
         let app_map = {
             'telepathy':            this._handleGeneric, /* Chat notifications */
             'notify-send':          this._handleNotifySend,
@@ -160,6 +183,17 @@ Indicator.prototype = {
             let source = item.source;
             let sourceCount = parseInt(source._counterLabel.get_text(), 10);
 
+            if (source.notifications && source.notifications.length > 0) {
+                debug("processing item '" + source.title + "' with " +
+                      source.notifications.length + " notifications:");
+                for (let i = 0; i < source.notifications.length; i++)
+                    debug ("    " + source.notifications[i].title);
+            }
+            else {
+                debug("processing item '" + source.title + "' with " +
+                      "no notifications");
+            }
+
             if (!isNaN(sourceCount) && sourceCount > 0) {
                 let key = null;
                 if (source.isChat)
@@ -171,13 +205,25 @@ Indicator.prototype = {
 
                 if (key != null || source.isChat) {
                     let app_cb = app_map[key];
-                    if (app_cb != null)
+                    if (app_cb != null) {
+                        debug ("processing with handler for key '" + key +
+                               "', the source count is " + sourceCount);
                         app_cb.call(this, item, sourceCount);
+                    }
+                    else {
+                        debug ("ignoring as there is no associated handler " +
+                               "for key '" + key + "'");
+                    }
                 }
+            }
+            else {
+                debug ("ignoring as the count is " + sourceCount);
             }
         }
 
         this._finishHandlingNotifySend();
+
+        debug ("the new total count is " + this._count);
 
         this._countLabel.set_text(this._count.toString());
         this.actor.visible = this._count > 0;
@@ -190,9 +236,15 @@ function customSetCount(count, visible) {
 }
 
 function init() {
+    if (GLib.getenv("MESSAGE_NOTIFIER_DEBUG")) {
+        debugEnabled = true;
+        debug ("initialised");
+    }
 }
 
 function enable() {
+    debug ("enabling");
+
     originalSetCount = MessageTray.Source.prototype._setCount;
     MessageTray.Source.prototype._setCount = customSetCount;
 
@@ -201,6 +253,8 @@ function enable() {
 }
 
 function disable() {
+    debug ("disabling");
+
     MessageTray.Source.prototype._setCount = originalSetCount;
     originalSetCount = null;
 
