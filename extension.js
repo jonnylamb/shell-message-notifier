@@ -79,7 +79,7 @@ Indicator.prototype = {
         // to split them based on the title.
         // If showCount is true it means that the application generates a
         // notification per new message, so we can count them (like in the
-        // XChat-GNOME case).
+        // case of XChat-GNOME without libnotify).
         // Otherwise, the application (Pidgin for instance) just generates
         // a notification for the first message, so we cannot rely on
         // counting the notifications.
@@ -154,7 +154,9 @@ Indicator.prototype = {
         this._pendingNotifySend = undefined;
     },
 
-    _handleXChatGnome: function(item, sourceCount) {
+    _handleXChat: function(item, sourceCount) {
+        // Both XChat and XChat-GNOME use notifications in the same way.
+        // Notice that XChat falls back to notify-send if it cannot use libnotify.
         this._handleGenericWithNotifications(item, sourceCount, true);
     },
 
@@ -168,7 +170,8 @@ Indicator.prototype = {
         let app_map = {
             'telepathy':           this._handleGeneric, /* Chat notifications */
             'notify-send':         this._handleNotifySend,
-            'xchat-gnome.desktop': this._handleXChatGnome,
+            'xchat-gnome.desktop': this._handleXChat,
+            'xchat.desktop':       this._handleXChat,
             'pidgin.desktop':      this._handlePidgin,
         };
 
