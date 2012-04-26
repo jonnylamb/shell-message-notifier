@@ -1,4 +1,29 @@
-This is a simple hack to avoid missing IM messages. To install the extension
-just type in a terminal "make install" and follow the instructions.
+WHAT IS THIS?
+=============
+In gnome-shell it's easy to miss a notification for a new chat message if you
+are not looking constantly at your screen. Message notifier is an extension
+that solves this problem by showing how many chats with unread messages you
+have.
 
-http://cgit.collabora.com/git/user/bari/shell-message-notifier.git/
+HOW TO INSTALL
+==============
+The best way to get this extension is by visiting its page on
+extensions.gnome.org: http://extensions.gnome.org/extension/150
+
+If you need to modify the source then the git repository is the best
+solution: http://cgit.collabora.com/git/user/bari/shell-message-notifier.git/
+Type "make force-install" to install the extension, then follow the
+instructions printed on screen.
+
+DEBUGGING
+=========
+If you have some problems with the extension you can help me debugging it
+by providing some logs.
+In a terminal type (as normal user):
+  MESSAGE_NOTIFIER_DEBUG=1 gnome-shell --replace > gnome-shell.log 2>&1
+Now try to reproduce the bug, when you are done open another terminal window
+and type:
+  gnome-shell --replace &
+This command will restart the shell as normal. Now send me "gnome-shell.log"
+after checking it doesn't contain any personal information, like the content
+of some private chat messages.
