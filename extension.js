@@ -74,7 +74,7 @@ Indicator.prototype = {
         this._addItemWithSource(item.source.title, sourceCount, item.source);
     },
 
-    _handleGenericWithNotifications: function(item, sourceCount, showCount) {
+    _handleGenericWithNotifications: function(item, sourceCount, showCount, messageFilter) {
         // A single notification icon represents more conversations. We try
         // to split them based on the title.
         // If showCount is true it means that the application generates a
@@ -90,9 +90,13 @@ Indicator.prototype = {
         let countMap = {}
         for (let i = 0; i < item.source.notifications.length; i++) {
             let title = item.source.notifications[i].title;
+            if (messageFilter)
+                title = messageFilter(title);
+
             let count = countMap[title];
             if (count == undefined)
                 count = 0;
+
             countMap[title] = count + 1;
         }
 
@@ -161,7 +165,14 @@ Indicator.prototype = {
     },
 
     _handlePidgin: function(item, sourceCount) {
-        this._handleGenericWithNotifications(item, sourceCount, false);
+        this._handleGenericWithNotifications(item, sourceCount, false,
+                function(message) {
+                    // The title of pidgin-libnotify's notifications is
+                    // "%s says:", but having that in the menu would be ugly.
+                    // The string is marked for translation in the source
+                    // code, but it's not actually translated.
+                    return message.replace(/\s+says:$/, "");
+                });
     },
 
     updateCount: function() {
