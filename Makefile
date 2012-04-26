@@ -13,6 +13,10 @@ install:
 	@echo "If you really need to install from source, for instance because you are making changes, you can use 'make force-install'."
 
 force-install:
+	@if [ `id -u` = 0 ]; then \
+	    echo "You need to install this extension as a normal user."; \
+	    exit 1; \
+	fi
 	@mkdir -p $(EXT_DIR)/$(UUID)
 	@for f in "$(FILES)"; do \
 	    cp -f $$f $(EXT_DIR)/$(UUID)/$$f; \
