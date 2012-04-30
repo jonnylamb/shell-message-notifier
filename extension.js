@@ -226,7 +226,15 @@ Indicator.prototype = {
                     }
                     else {
                         debug ("ignoring as there is no associated handler " +
-                               "for key '" + key + "'");
+                               "for key '" + key + "':");
+                        debug ("    source title: '" + source.title + "'");
+                        if (source.app) {
+                            debug ("    app ID: '" + source.app.get_id() + "'");
+                            debug ("    app name: '" + source.app.get_name() + "'");
+                        }
+                        else {
+                            debug ("    app: null'");
+                        }
                     }
                 }
             }
