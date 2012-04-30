@@ -254,7 +254,14 @@ Indicator.prototype = {
 
 function customSetCount(count, visible) {
     originalSetCount.call(this, count, visible);
-    indicator.updateCount();
+    try {
+        indicator.updateCount();
+    }
+    catch (err) {
+        /* If the extension is broken I don't want to break everything.
+         * We just catch the extension, print it and go on */
+        logError (err, err);
+    }
 }
 
 function init() {
