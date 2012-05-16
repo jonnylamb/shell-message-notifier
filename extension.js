@@ -233,7 +233,7 @@ Indicator.prototype = {
                             debug ("    app name: '" + source.app.get_name() + "'");
                         }
                         else {
-                            debug ("    app: null'");
+                            debug ("    app: null");
                         }
                     }
                 }
