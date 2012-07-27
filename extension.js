@@ -20,6 +20,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;
 const Main = imports.ui.main;
+const Meta = imports.gi.Meta;
 const MessageTray = imports.ui.messageTray;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
@@ -56,6 +57,15 @@ Indicator.prototype = {
         this.actor.add_actor(this._countLabel);
 
         this.updateCount();
+
+        global.display.add_keybinding('show-message-notifier', settings,
+                Meta.KeyBindingFlags.NONE,
+                Lang.bind(this, function () {
+                    if (this.menu.firstMenuItem) {
+                        this.menu.open();
+                        this.menu.firstMenuItem.setActive(true);
+                    }
+                }));
     },
 
     _addItem: function(title, count, openFunction) {
