@@ -1,6 +1,6 @@
 EXT_DIR="$(HOME)/.local/share/gnome-shell/extensions"
 UUID=`perl -nle 'if (m{"uuid": "([^"]+)"}) { print $$1 }' metadata.json`
-FILES="AUTHORS COPYING README extension.js stylesheet.css metadata.json schemas/org.barisione.shell-extensions.message-notifier.gschema.xml schemas/gschemas.compiled"
+FILES="AUTHORS COPYING README extension.js prefs.js convenience.js stylesheet.css metadata.json schemas/org.barisione.shell-extensions.message-notifier.gschema.xml schemas/gschemas.compiled"
 
 SCHEMA="org.gnome.shell"
 KEY="enabled-extensions"
