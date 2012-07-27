@@ -41,15 +41,12 @@ function debug(message) {
         log ("MESSAGE-NOTIFIER: " + message);
 }
 
-function Indicator() {
-    this._init.apply(this, arguments);
-}
-
-Indicator.prototype = {
-    __proto__: PanelMenu.Button.prototype,
+const Indicator = new Lang.Class({
+    Name: "Indicator",
+    Extends: PanelMenu.Button,
 
     _init: function() {
-        PanelMenu.Button.prototype._init.call(this, 0.0, "Message notifier");
+        this.parent(0.0, "Message notifier");
 
         this._countLabel = new St.Label({style_class: 'message-label'});
 
@@ -267,7 +264,7 @@ Indicator.prototype = {
         this._countLabel.set_text(this._count.toString());
         this.actor.visible = alwaysShow || this._count > 0;
     },
-}
+});
 
 function customSetCount(count, visible) {
     originalSetCount.call(this, count, visible);
