@@ -3,7 +3,7 @@
   <schema path="/org/barisione/shell-extensions/message-notifier/" id="org.barisione.shell-extensions.message-notifier">
     <key name="show-message-notifier" type="as">
         <default><![CDATA[['<Super>m']]]></default>
-      <summary>Keybinding to open the message notifier menu</summary>
+      <summary>Open the message notifier menu</summary>
       <description>
         Keybinding to open the message notifier menu.
       </description>
