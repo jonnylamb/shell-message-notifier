@@ -183,6 +183,7 @@ Indicator.prototype = {
             'telepathy':           this._handleGeneric, /* Chat notifications */
             'notify-send':         this._handleNotifySend,
             'xchat-gnome.desktop': this._handleXChat,
+            'fedora-xchat-gnome.desktop':   this._handleXChat,
             'xchat.desktop':       this._handleXChat,
             'pidgin.desktop':      this._handlePidgin,
         };
