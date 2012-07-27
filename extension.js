@@ -180,12 +180,12 @@ Indicator.prototype = {
         debug("updating count");
 
         let app_map = {
-            'telepathy':           this._handleGeneric, /* Chat notifications */
-            'notify-send':         this._handleNotifySend,
-            'xchat-gnome.desktop': this._handleXChat,
+            'telepathy':                    this._handleGeneric, /* Chat notifications */
+            'notify-send':                  this._handleNotifySend,
+            'xchat-gnome.desktop':          this._handleXChat,
             'fedora-xchat-gnome.desktop':   this._handleXChat,
-            'xchat.desktop':       this._handleXChat,
-            'pidgin.desktop':      this._handlePidgin,
+            'xchat.desktop':                this._handleXChat,
+            'pidgin.desktop':               this._handlePidgin,
         };
 
         this._count = 0;
