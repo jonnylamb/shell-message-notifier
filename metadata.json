@@ -3,5 +3,6 @@
     "uuid": "message-notifier@shell-extensions.barisione.org",
     "name": "Message Notifier",
     "description": "Shows how many conversations with new messages you have",
-    "url": "http://cgit.collabora.com/git/user/bari/shell-message-notifier.git/"
+    "url": "http://cgit.collabora.com/git/user/bari/shell-message-notifier.git/",
+    "settings-schema": "org.barisione.shell-extensions.message-notifier"
 }

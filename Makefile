@@ -1,6 +1,6 @@
 EXT_DIR="$(HOME)/.local/share/gnome-shell/extensions"
 UUID=`perl -nle 'if (m{"uuid": "([^"]+)"}) { print $$1 }' metadata.json`
-FILES="AUTHORS COPYING README extension.js stylesheet.css metadata.json"
+FILES="AUTHORS COPYING README extension.js stylesheet.css metadata.json schemas/org.barisione.shell-extensions.message-notifier.gschema.xml schemas/gschemas.compiled"
 
 SCHEMA="org.gnome.shell"
 KEY="enabled-extensions"
@@ -12,12 +12,12 @@ install:
 	@echo "You should install this extension from <https://extensions.gnome.org/extension/150>."
 	@echo "If you really need to install from source, for instance because you are making changes, you can use 'make force-install'."
 
-force-install: uninstall-link
+force-install: uninstall-link compile-schemas
 	@if [ `id -u` = 0 ]; then \
 	    echo "You need to install this extension as a normal user."; \
 	    exit 1; \
 	fi
-	@mkdir -p $(EXT_DIR)/$(UUID)
+	@mkdir -p $(EXT_DIR)/$(UUID)/schemas
 	@for f in "$(FILES)"; do \
 	    cp -f $$f $(EXT_DIR)/$(UUID)/$$f; \
 	done
@@ -27,7 +27,7 @@ force-install: uninstall-link
 	    echo "To enable the extension type 'make enable'."; \
 	fi
 
-install-link: uninstall-link
+install-link: uninstall-link compile-schemas
 	@if [ -e $(EXT_DIR)/$(UUID) ]; then \
 	    echo "An installed version of the extension exists; remove it first."; \
 	    exit 1; \
@@ -85,7 +85,10 @@ status:
 	    echo "The extension is disabled"; \
 	fi
 
-dist:
+compile-schemas:
+	@glib-compile-schemas schemas/
+
+dist: compile-schemas
 	@git log > ChangeLog; \
 	for f in "$(FILES)"; do \
 	    if [ "x$$f" != "xREADME" ]; then \

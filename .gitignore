@@ -3,3 +3,4 @@
 *.rej
 *.orig
 message-notifier.zip
+schemas/gschemas.compiled

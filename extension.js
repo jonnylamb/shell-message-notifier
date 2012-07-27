@@ -16,6 +16,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+const ExtensionUtils = imports.misc.extensionUtils;
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;
 const Main = imports.ui.main;
@@ -24,8 +25,12 @@ const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const St = imports.gi.St;
 
+const Me = ExtensionUtils.getCurrentExtension();
+const Convenience = Me.imports.convenience;
+
 let originalSetCount = null;
 let indicator = null;
+let settings = null;
 
 let debugEnabled = false;
 let alwaysShow = false;
@@ -269,13 +274,18 @@ function customSetCount(count, visible) {
 function init() {
     if (GLib.getenv("MESSAGE_NOTIFIER_DEBUG")) {
         debugEnabled = true;
-        debug ("initialised");
     }
+
+    debug ("initialising");
 
     if (GLib.getenv("MESSAGE_NOTIFIER_ALWAYS_SHOW")) {
         alwaysShow = true;
         debug ("always showing the icon");
     }
+
+    settings = Convenience.getSettings();
+
+    debug ("initialised");
 }
 
 function enable() {
