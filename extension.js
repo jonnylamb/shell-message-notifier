@@ -28,6 +28,7 @@ let originalSetCount = null;
 let indicator = null;
 
 let debugEnabled = false;
+let alwaysShow = false;
 
 function debug(message) {
     if (debugEnabled)
@@ -248,7 +249,7 @@ Indicator.prototype = {
         debug ("the new total count is " + this._count);
 
         this._countLabel.set_text(this._count.toString());
-        this.actor.visible = this._count > 0;
+        this.actor.visible = alwaysShow || this._count > 0;
     },
 }
 
@@ -268,6 +269,11 @@ function init() {
     if (GLib.getenv("MESSAGE_NOTIFIER_DEBUG")) {
         debugEnabled = true;
         debug ("initialised");
+    }
+
+    if (GLib.getenv("MESSAGE_NOTIFIER_ALWAYS_SHOW")) {
+        alwaysShow = true;
+        debug ("always showing the icon");
     }
 }
 
