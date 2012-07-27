@@ -12,7 +12,7 @@ install:
 	@echo "You should install this extension from <https://extensions.gnome.org/extension/150>."
 	@echo "If you really need to install from source, for instance because you are making changes, you can use 'make force-install'."
 
-force-install:
+force-install: uninstall-link
 	@if [ `id -u` = 0 ]; then \
 	    echo "You need to install this extension as a normal user."; \
 	    exit 1; \
@@ -27,7 +27,24 @@ force-install:
 	    echo "To enable the extension type 'make enable'."; \
 	fi
 
-uninstall: disable-internal
+install-link: uninstall-link
+	@if [ -e $(EXT_DIR)/$(UUID) ]; then \
+	    echo "An installed version of the extension exists; remove it first."; \
+	    exit 1; \
+	fi
+	@ln -s $$PWD $(EXT_DIR)/$(UUID)
+	@if [ $(STATUS) = "enabled" ]; then \
+	    echo "To reload the shell (and the extension) press ALT-F2 and type 'r'."; \
+	else \
+	    echo "To enable the extension type 'make enable'."; \
+	fi
+
+uninstall-link:
+	@if [ -L $(EXT_DIR)/$(UUID) ]; then \
+	    rm $(EXT_DIR)/$(UUID); \
+	fi
+
+uninstall: disable-internal uninstall-link
 	@for f in "$(FILES)" ChangeLog; do \
 	    rm $(EXT_DIR)/$(UUID)/$$f 2> /dev/null || true; \
 	done
