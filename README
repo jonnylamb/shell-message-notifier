@@ -5,6 +5,10 @@ are not looking constantly at your screen. Message notifier is an extension
 that solves this problem by showing how many chats with unread messages you
 have.
 
+The extension is licenced under GPL 2 or later because it contains files
+copied from gnome-shell-extensions. The code I wrote myself is under LGPL 2 or
+later, so you can more easily include it in your project if you need it.
+
 HOW TO INSTALL
 ==============
 The best way to get this extension is by visiting its page on
