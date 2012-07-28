@@ -55,13 +55,20 @@ const Indicator = new Lang.Class({
 
         this.updateCount();
 
-        global.display.add_keybinding('show-message-notifier', settings,
+        let settingId = "show-message-notifier";
+        debug("using keybinding '" + settings.get_strv(settingId)[0] +
+            "' to show the menu");
+        global.display.add_keybinding(settingId, settings,
                 Meta.KeyBindingFlags.NONE,
                 Lang.bind(this, function () {
                     if (this.menu.firstMenuItem) {
+                        debug("menu activated through a keybinding");
                         this.menu.open();
                         this.menu.firstMenuItem.setActive(true);
                     }
+                    else
+                        debug("menu activated through a keybinding, " +
+                            "but no items available");
                 }));
     },
 
