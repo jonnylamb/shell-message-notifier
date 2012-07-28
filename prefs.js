@@ -32,7 +32,12 @@ let settings = null;
 
 function addKeybinding(model, settings, id, description) {
     // Get the current accelerator.
-    let [key, mods] = Gtk.accelerator_parse(settings.get_strv(id)[0]);
+    let accelerator = settings.get_strv(id)[0];
+    let key, mods;
+    if (accelerator == null)
+        [key, mods] = [0, 0];
+    else
+        [key, mods] = Gtk.accelerator_parse(settings.get_strv(id)[0]);
 
     // Add a row for the keybinding.
     let row = model.insert(100); // Erm...
@@ -85,6 +90,20 @@ function createKeybindingWidget() {
                 let id = model.get_value(iter, COLUMN_ID);
                 let accelString = Gtk.accelerator_name(key, mods);
                 settings.set_strv(id, [accelString]);
+            });
+
+    renderer.connect("accel-cleared",
+            function (renderer, path) {
+                let [ok, iter] = model.get_iter_from_string(path);
+                if(!ok)
+                    return;
+
+                // Update the UI.
+                model.set(iter, [COLUMN_KEY, COLUMN_MODS], [0, 0]);
+
+                // Update the stored setting.
+                let id = model.get_value(iter, COLUMN_ID);
+                settings.set_strv(id, []);
             });
 
     column = new Gtk.TreeViewColumn();
