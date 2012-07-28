@@ -305,13 +305,13 @@ function init() {
         debug ("always showing the icon");
     }
 
-    settings = Convenience.getSettings();
-
     debug ("initialised");
 }
 
 function enable() {
     debug ("enabling");
+
+    settings = Convenience.getSettings();
 
     originalSetCount = MessageTray.Source.prototype._setCount;
     MessageTray.Source.prototype._setCount = customSetCount;
@@ -328,4 +328,6 @@ function disable() {
 
     indicator.destroy();
     indicator = null;
+
+    settings = null;
 }
