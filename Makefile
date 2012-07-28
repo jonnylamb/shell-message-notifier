@@ -48,6 +48,7 @@ uninstall: disable-internal uninstall-link
 	@for f in "$(FILES)" ChangeLog; do \
 	    rm $(EXT_DIR)/$(UUID)/$$f 2> /dev/null || true; \
 	done
+	@[ -d $(EXT_DIR)/$(UUID)/schemas ] && rmdir $(EXT_DIR)/$(UUID)/schemas; true
 	@[ -d $(EXT_DIR)/$(UUID) ] && rmdir $(EXT_DIR)/$(UUID); true
 
 enable: disable-internal
