@@ -29,6 +29,8 @@ const St = imports.gi.St;
 const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 
+const openMenuSettingId = "show-message-notifier";
+
 let originalSetCount = null;
 let indicator = null;
 let settings = null;
@@ -55,10 +57,9 @@ const Indicator = new Lang.Class({
 
         this.updateCount();
 
-        let settingId = "show-message-notifier";
-        debug("using keybinding '" + settings.get_strv(settingId)[0] +
+        debug("using keybinding '" + settings.get_strv(openMenuSettingId)[0] +
             "' to show the menu");
-        global.display.add_keybinding(settingId, settings,
+        global.display.add_keybinding(openMenuSettingId, settings,
                 Meta.KeyBindingFlags.NONE,
                 Lang.bind(this, function () {
                     if (this.menu.firstMenuItem) {
@@ -70,6 +71,13 @@ const Indicator = new Lang.Class({
                         debug("menu activated through a keybinding, " +
                             "but no items available");
                 }));
+    },
+
+    destroy: function() {
+        debug("unregistering keybindings");
+        global.display.remove_keybinding(openMenuSettingId);
+
+        this.parent();
     },
 
     _addItem: function(title, count, openFunction) {
