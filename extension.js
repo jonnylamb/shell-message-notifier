@@ -296,16 +296,13 @@ function customSetCount(count, visible) {
 function init() {
     if (GLib.getenv("MESSAGE_NOTIFIER_DEBUG")) {
         debugEnabled = true;
+        debug ("initialising");
     }
-
-    debug ("initialising");
 
     if (GLib.getenv("MESSAGE_NOTIFIER_ALWAYS_SHOW")) {
         alwaysShow = true;
         debug ("always showing the icon");
     }
-
-    debug ("initialised");
 }
 
 function enable() {
