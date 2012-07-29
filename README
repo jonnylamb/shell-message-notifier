@@ -14,15 +14,15 @@ HOW TO INSTALL
 The best way to get this extension is by visiting its page on
 extensions.gnome.org: http://extensions.gnome.org/extension/150
 
-If you need to modify the source then the git repository is the best
+If you need to modify the source, then the git repository is the best
 solution: http://cgit.collabora.com/git/user/bari/shell-message-notifier.git/
 Type "make force-install" to install the extension, then follow the
 instructions printed on screen.
 
 DEBUGGING
 =========
-If you have some problems with the extension you can help me debugging it
-by providing some logs.
+If you have any problem with the extension, you can help me debugging it by
+providing some logs.
 In a terminal type (as normal user):
   MESSAGE_NOTIFIER_DEBUG=1 gnome-shell --replace > gnome-shell.log 2>&1
 Now try to reproduce the bug, when you are done open another terminal window
