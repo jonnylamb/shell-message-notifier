@@ -21,13 +21,5 @@ instructions printed on screen.
 
 DEBUGGING
 =========
-If you have any problem with the extension, you can help me debugging it by
-providing some logs.
-In a terminal type (as normal user):
-  MESSAGE_NOTIFIER_DEBUG=1 gnome-shell --replace > gnome-shell.log 2>&1
-Now try to reproduce the bug, when you are done open another terminal window
-and type:
-  gnome-shell --replace &
-This command will restart the shell as normal. Now send me "gnome-shell.log"
-after checking it doesn't contain any personal information, like the content
-of some private chat messages.
+Please, read the debugging.txt file. The most recent version is available at
+http://cgit.collabora.com/git/user/bari/shell-message-notifier.git/tree/debugging.txt
