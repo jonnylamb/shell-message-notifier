@@ -4,6 +4,8 @@ In gnome-shell it's easy to miss a notification for a new chat message if you
 are not looking constantly at your screen. Message notifier is an extension
 that solves this problem by showing how many chats with unread messages you
 have.
+See programs.txt for instructions on which programs are supported and how to
+get them to work.
 
 The extension is licenced under GPL 2 or later because it contains files
 copied from gnome-shell-extensions. The code I wrote myself is under LGPL 2 or

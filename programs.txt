@@ -1,0 +1,45 @@
+Here is a list of applications supported by this extension. Some of them need
+some changes to the preferences to enable notification bubbles.
+
+
+Empathy/gnome-shell chat
+========================
+It works out of the box!
+
+
+Pidgin
+======
+Click on the “Tools” menu and then “Plug-ins”. Make sure that the “Libnotify
+Popups” plugin is enabled. If the plugin is not in the list, it means you need
+to install it. On Debian the package is called “pidgin-libnotify”, other
+distros should have a package with a similar name.
+
+
+XChat-GNOME
+===========
+Click on the “Edit” menu and then “Preferences”. In the “Scripts and Plugins”
+tab make sure that “On-screen display” is enabled.
+
+
+XChat
+=====
+Click on the “Settings” menu and then “Preferences”. In the “Alerts” tab make
+sure that “Show tray baloons” is enabled for both “Private Message” and
+“Highlighted Message”.
+If the notifications pile up in the bottom right corner of your screen and
+clicking on them does nothing, it means that XChat is using notify-send
+because it cannot find libnotify. I don’t know how to fix this issue on your
+particular distro, but <https://bugzilla.redhat.com/show_bug.cgi?id=693362>
+describes the problem for Fedora.
+
+
+Need support for other programs?
+================================
+If you need support for any other common application, just ask! (My email is
+marco@barisione.org.)
+The only prerequisite is that the program needs to use standard notification
+bubbles (and this means I cannot add support for Skype).
+
+Note that the extension doesn't support email clients by design. Most people
+get a lot of emails and it would be annoying to get notified for every new
+email.
