@@ -31,7 +31,7 @@ const Convenience = Me.imports.convenience;
 
 const openMenuSettingId = "show-message-notifier";
 
-let originalSetCount = null;
+let originalUpdateCount = null;
 let indicator = null;
 let settings = null;
 
@@ -224,7 +224,10 @@ const Indicator = new Lang.Class({
         for (let i = 0; i < items.length; i++) {
             let item = items[i];
             let source = item.source;
-            let sourceCount = parseInt(source._counterLabel.get_text(), 10);
+
+            // make sure we have source._mainIcon
+            source._ensureMainIcon();
+            let sourceCount = parseInt(source._mainIcon._counterLabel.get_text(), 10);
 
             if (source.notifications && source.notifications.length > 0) {
                 debug("processing item '" + source.title + "' with " +
@@ -281,8 +284,8 @@ const Indicator = new Lang.Class({
     },
 });
 
-function customSetCount(count, visible) {
-    originalSetCount.call(this, count, visible);
+function customUpdateCount() {
+    originalUpdateCount.call(this);
     try {
         indicator.updateCount();
     }
@@ -310,8 +313,8 @@ function enable() {
 
     settings = Convenience.getSettings();
 
-    originalSetCount = MessageTray.Source.prototype._setCount;
-    MessageTray.Source.prototype._setCount = customSetCount;
+    originalUpdateCount = MessageTray.SourceActor.prototype._updateCount;
+    MessageTray.SourceActor.prototype._updateCount = customUpdateCount;
 
     indicator = new Indicator();
     Main.panel.addToStatusArea('message-notifier', indicator, 0);
@@ -320,8 +323,8 @@ function enable() {
 function disable() {
     debug ("disabling");
 
-    MessageTray.Source.prototype._setCount = originalSetCount;
-    originalSetCount = null;
+    MessageTray.SourceActor.prototype._updateCount = originalUpdateCount;
+    originalUpdateCount = null;
 
     indicator.destroy();
     indicator = null;
