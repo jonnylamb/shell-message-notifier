@@ -219,7 +219,7 @@ const Indicator = new Lang.Class({
         this._startHandlingNotifySend();
         this.menu.removeAll();
 
-        let items = Main.messageTray._summaryItems;
+        let items = Main.messageTray.getSources();
 
         for (let i = 0; i < items.length; i++) {
             let item = items[i];
