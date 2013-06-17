@@ -80,7 +80,7 @@ const Indicator = new Lang.Class({
         this.parent();
     },
 
-    _addItem: function(title, count, openFunction) {
+    _addElement: function(title, count, openFunction) {
         this._count += 1;
 
         if (count > 0)
@@ -90,16 +90,16 @@ const Indicator = new Lang.Class({
         menuItem.connect('activate', openFunction);
         this.menu.addMenuItem(menuItem);
 
-        debug("added item '" + title + "'");
+        debug("added element '" + title + "'");
     },
 
-    _addItemWithSource: function(title, count, item) {
-        this._addItem(title, count, Lang.bind(item, item.open));
+    _addElementFromItem: function(title, count, item) {
+        this._addElement(title, count, Lang.bind(item, item.open));
     },
 
     _handleGeneric: function(item, itemCount) {
         // Easiest case: every notification item represents a single chat.
-        this._addItemWithSource(item.title, itemCount, item);
+        this._addElementFromItem(item.title, itemCount, item);
     },
 
     _handleGenericWithNotifications: function(item, itemCount, showCount, messageFilter) {
@@ -129,7 +129,7 @@ const Indicator = new Lang.Class({
         }
 
         for (let title in countMap)
-            this._addItemWithSource(title, showCount ? countMap[title] : -1, item);
+            this._addElementFromItem(title, showCount ? countMap[title] : -1, item);
     },
 
     _startHandlingNotifySend: function() {
@@ -174,7 +174,7 @@ const Indicator = new Lang.Class({
 
         for (let title in this._pendingNotifySend) {
             let notifications = this._pendingNotifySend[title];
-            this._addItem(title, notifications.length, function() {
+            this._addElement(title, notifications.length, function() {
                 // We call open on all of the notifications, but I don't think it
                 // can do anything in the notify-send case (except for dismissing
                 // the notification).
