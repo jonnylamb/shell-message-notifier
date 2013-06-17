@@ -269,9 +269,12 @@ const Indicator = new Lang.Class({
                         }
                     }
                 }
+                else {
+                    debug("ignoring item with null key");
+                }
             }
             else {
-                debug ("ignoring as the count is " + sourceCount);
+                debug("ignoring item as sourceCount is " + sourceCount);
             }
         }
 
