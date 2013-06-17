@@ -1,5 +1,5 @@
 {
-    "shell-version": ["3.6"],
+    "shell-version": ["3.8"],
     "uuid": "message-notifier@shell-extensions.barisione.org",
     "name": "Message Notifier",
     "description": "Shows how many conversations with new messages you have.",
