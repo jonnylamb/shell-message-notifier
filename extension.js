@@ -19,6 +19,7 @@
 const ExtensionUtils = imports.misc.extensionUtils;
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;
+const BoxPointer = imports.ui.boxpointer;
 const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
 const MessageTray = imports.ui.messageTray;
@@ -87,7 +88,10 @@ const Indicator = new Lang.Class({
             title += " (" + count.toString() + ")";
 
         let menuItem = new PopupMenu.PopupMenuItem(title);
-        menuItem.connect('activate', openFunction);
+        menuItem.connect('activate', Lang.bind(this, function() {
+            this.menu.close(BoxPointer.PopupAnimation.NONE);
+            openFunction();
+        }));
         this.menu.addMenuItem(menuItem);
 
         debug("added element '" + title + "'");
