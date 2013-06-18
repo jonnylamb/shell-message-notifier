@@ -25,6 +25,7 @@ const Meta = imports.gi.Meta;
 const MessageTray = imports.ui.messageTray;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
+const Shell = imports.gi.Shell;
 const St = imports.gi.St;
 
 const Me = ExtensionUtils.getCurrentExtension();
@@ -60,8 +61,9 @@ const Indicator = new Lang.Class({
 
         debug("using keybinding '" + settings.get_strv(openMenuSettingId)[0] +
             "' to show the menu");
-        global.display.add_keybinding(openMenuSettingId, settings,
+        Main.wm.addKeybinding(openMenuSettingId, settings,
                 Meta.KeyBindingFlags.NONE,
+                Shell.KeyBindingMode.NORMAL | Shell.KeyBindingMode.OVERVIEW,
                 Lang.bind(this, function () {
                     if (this.menu.firstMenuItem) {
                         debug("menu activated through a keybinding");
