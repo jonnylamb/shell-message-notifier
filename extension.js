@@ -16,13 +16,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+const BoxPointer = imports.ui.boxpointer;
 const ExtensionUtils = imports.misc.extensionUtils;
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;
-const BoxPointer = imports.ui.boxpointer;
 const Main = imports.ui.main;
-const Meta = imports.gi.Meta;
 const MessageTray = imports.ui.messageTray;
+const Meta = imports.gi.Meta;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const Shell = imports.gi.Shell;
