@@ -21,6 +21,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;
 const Main = imports.ui.main;
+const Mainloop = imports.mainloop;
 const MessageTray = imports.ui.messageTray;
 const Meta = imports.gi.Meta;
 const PanelMenu = imports.ui.panelMenu;
@@ -93,6 +94,16 @@ const Indicator = new Lang.Class({
         menuItem.connect('activate', Lang.bind(this, function() {
             this.menu.close(BoxPointer.PopupAnimation.NONE);
             openFunction();
+            Mainloop.timeout_add_seconds (1, Lang.bind(this, function() {
+                /* Opening the item triggers a call to updateCount()
+                 * automatically, but sometimes it doesn't work so the count
+                 * remains unchanged. It's probably a gnome-shell bug, but I
+                 * cannot figure out what happens exactly.
+                 * We force an updateCount() after a timeout as this works
+                 * around the bug (and has no side effect). */
+                this.updateCount();
+                return false;
+            }));
         }));
         this.menu.addMenuItem(menuItem);
 
