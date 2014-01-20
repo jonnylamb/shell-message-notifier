@@ -53,7 +53,7 @@ const Indicator = new Lang.Class({
     _init: function() {
         this.parent(0.0, "Message notifier");
 
-        this._countLabel = new St.Label({style_class: 'message-label'});
+        this._countLabel = new St.Label({style_class: 'count-label'});
 
         this._countLabelContainer = new St.Bin({style_class: 'count-label-container'});
         this._countLabelContainer.add_actor(this._countLabel);
