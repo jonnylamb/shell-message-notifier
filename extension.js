@@ -55,8 +55,11 @@ const Indicator = new Lang.Class({
 
         this._countLabel = new St.Label({style_class: 'message-label'});
 
+        this._countLabelContainer = new St.Bin({style_class: 'count-label-container'});
+        this._countLabelContainer.add_actor(this._countLabel);
+
         this.actor.visible = false;
-        this.actor.add_actor(this._countLabel);
+        this.actor.add_actor(this._countLabelContainer);
 
         this.updateCount();
 
