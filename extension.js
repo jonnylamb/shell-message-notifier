@@ -303,6 +303,18 @@ const Indicator = new Lang.Class({
 
         this._countLabel.set_text(this._count.toString());
         this.actor.visible = alwaysShow || this._count > 0;
+
+        /* We want to keep this icon always as the first element in the box
+         * (otherwise it looks weird), but there's no proper way of ensuring
+         * it as it depends on the extension load order.
+         * To fix the issue the actor that contains this indicator is just
+         * removed and reinserted every time  that the count is updated. */
+        let container = this.container;
+        let box = container.get_parent();
+        if (box) {
+            box.remove_actor(container);
+            box.insert_child_at_index(container, 0);
+        }
     },
 });
 
