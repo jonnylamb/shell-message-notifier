@@ -347,8 +347,8 @@ function enable() {
 
     settings = Convenience.getSettings();
 
-    originalUpdateCount = MessageTray.SourceActor.prototype._updateCount;
-    MessageTray.SourceActor.prototype._updateCount = customUpdateCount;
+    originalUpdateCount = MessageTray.SourceActorWithLabel.prototype._updateCount;
+    MessageTray.SourceActorWithLabel.prototype._updateCount = customUpdateCount;
 
     indicator = new Indicator();
     Main.panel.addToStatusArea('message-notifier', indicator, 0);
@@ -357,7 +357,7 @@ function enable() {
 function disable() {
     debug ("disabling");
 
-    MessageTray.SourceActor.prototype._updateCount = originalUpdateCount;
+    MessageTray.SourceActorWithLabel.prototype._updateCount = originalUpdateCount;
     originalUpdateCount = null;
 
     indicator.destroy();
